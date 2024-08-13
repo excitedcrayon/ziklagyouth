@@ -12,6 +12,8 @@ abstract class Config {
   // headings
   static const String welcomeText = "Welcome";
   static const String latestPostsHeading = "Latest Posts";
+  static const String contactsPageHeading = "Contacts";
+  static const String favouritesHeading = "Favourites";
 
   // Links
 
@@ -36,4 +38,6 @@ abstract class Config {
   static const double headingSizeXXLarge = 60.0;
   static const double cardWidth = 160.0;
   static const double cardHeight = 200.0;
+  static const double iconSize = 20.0;
+  static const double iconMediumSize = 50.0;
 }
