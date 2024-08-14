@@ -39,6 +39,7 @@ class _ContactspageState extends State<Contactspage> {
                   ),
                 ),
               ),
+              /*
               Container(
                 height: 80.0,
                 decoration: BoxDecoration(
@@ -76,7 +77,7 @@ class _ContactspageState extends State<Contactspage> {
                     ),
                   ],
                 ),
-              ),
+              ), */
               Container(
                 margin: EdgeInsets.only(
                   top: Config.defaultPadding

@@ -40,4 +40,6 @@ abstract class Config {
   static const double cardHeight = 200.0;
   static const double iconSize = 20.0;
   static const double iconMediumSize = 50.0;
+
+  static const int gridCount = 3;
 }
