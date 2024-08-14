@@ -79,7 +79,7 @@ class _ContactspageState extends State<Contactspage> {
                 ),
               ), */
               Container(
-                margin: EdgeInsets.only(
+                margin: const EdgeInsets.only(
                   top: Config.defaultPadding
                 ),
                 child: CustomWidget.renderText(
