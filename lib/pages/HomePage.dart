@@ -10,6 +10,13 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+
+  @override @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
@@ -89,7 +96,7 @@ class _HomePageState extends State<HomePage> {
                 ],
               ),
             ),
-          ),
+          ) ,
           Container(
             padding: const EdgeInsets.all(Config.defaultPadding),
             width: double.infinity,
