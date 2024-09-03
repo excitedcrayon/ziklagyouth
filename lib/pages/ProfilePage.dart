@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:http/http.dart' as http;
 import 'package:ziklagyouth/config/config.dart';
-import 'package:ziklagyouth/widgets/CustomWidget.dart';
+
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({Key? key}) : super(key: key);
@@ -10,206 +12,147 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
+
+  final _registerFormKey = GlobalKey<FormState>();
+  final _firstnameController = TextEditingController();
+  final _middlenameController = TextEditingController();
+  final _lastnameController = TextEditingController();
+  final _phoneController = TextEditingController();
+  final _emailController = TextEditingController();
+  final _passwordController = TextEditingController();
+  bool _obscurePasswordText = true;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+  }
+
+  Future<void> postRegisterFormData() async {
+    var response = Uri.parse(Config.registerLink);
+
+    if ( _registerFormKey.currentState?.validate() ?? false ) {
+      final firstname = _firstnameController.text;
+      final middlename = _middlenameController.text;
+      final lastname = _lastnameController.text;
+      final phone = _phoneController.text;
+      final email = _emailController.text;
+      final password = _passwordController.text;
+
+      try {
+        final response = await http.post(
+          Uri.parse(Config.registerLink),
+          body: {
+            'firstname': firstname,
+            'middlename': middlename,
+            'lastname': lastname,
+            'phone': phone,
+            'email': email,
+            'password': password
+          }
+        );
+
+        if ( response.statusCode == 200 ) {
+          print(response.body);
+        } else {
+          print("Did not work");
+        }
+
+      } catch(e) {
+        print("Register Form Data Exception: $e");
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        body: Column(
-          children: <Widget>[
-            settingsSection(),
-            Expanded(
-              child: Container(
-                decoration: BoxDecoration(
-                  color: Color(Config.colorGold),
-                ),
-                child: Container(
-                  width: double.infinity,
-                  decoration: BoxDecoration(
-                      color: Color(Config.colorWhite),
-                    borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(Config.defaultPadding * 2),
-                      topRight: Radius.circular(Config.defaultPadding * 2)
-                    )
-                  ),
-                  padding: const EdgeInsets.all(Config.defaultPadding),
-                  child: SingleChildScrollView(
-                    child: Column(
-                      children: <Widget>[
-                        profileTopSection(),
-                        profileSubMenus(),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Container settingsSection(){
-    return Container(
-      width: double.infinity,
-      height: Config.defaultPadding * 4.5,
-      decoration: const BoxDecoration(
-        color: Color(Config.colorGold),
-      ),
-      child: const Padding(
-        padding: EdgeInsets.all(Config.defaultPadding),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: <Widget>[
-            Text(
-              'Settings',
-              style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: Config.defaultPadding * 1.2
-              ),
-            ),
-            InkWell(
-              child: Icon(
-                Icons.settings,
-                size: Config.iconSize * 1.5,
-              ),
-            )
-          ],
-        ),
-      ),
-    );
-  }
-
-  Center profileTopSection(){
-    return Center(
-      child: SizedBox(
-        width: Config.iconMediumSize * 8,
-        child: Column(
-          children: <Widget>[
-            Container(
-              alignment: Alignment.bottomCenter,
-              margin: const EdgeInsets.symmetric(
-                  vertical: Config.defaultPadding
-              ),
-              width: Config.iconMediumSize * 4,
-              height: Config.iconMediumSize * 4,
-              decoration: BoxDecoration(
-                  border: Border.all(
-                    color: Color(Config.colorGold),
-                    width: 4.0,
-                  ),
-                  image: DecorationImage(
-                      image: NetworkImage('https://media.licdn.com/dms/image/C5603AQHg_gI79tmGFQ/profile-displayphoto-shrink_200_200/0/1636400845736?e=2147483647&v=beta&t=zQzniPO7dkotUUv7H-4m9TvVKdH6MikP2Gch0XazFeI'),
-                      fit: BoxFit.cover
-                  ),
-                  shape: BoxShape.circle
-              ),
-            ),
-            Center(
+        body: SingleChildScrollView(
+          child: Form(
+            key: _registerFormKey,
+            child: Padding(
+              padding: const EdgeInsets.all(Config.defaultPadding),
               child: Column(
                 children: <Widget>[
-                  Text(
-                    "Bongani Mkonto",
-                    overflow: TextOverflow.ellipsis,
-                    style: TextStyle(
-                        fontSize: Config.headingSizeLarge * 1.3,
-                        fontWeight: FontWeight.w500
-                    ),
-                  ),
+                  formTextField(_firstnameController, "Firstname", "Please enter firstname"),
+                  formTextFieldCanBeNull(_middlenameController, "Middlename", ""),
+                  formTextField(_lastnameController, "Lastname", "Please enter lastname"),
+                  formNumberField(_phoneController, "Phone", "Please enter phone number"),
+                  formTextField(_emailController, "Email", "Please enter email"),
+                  formPasswordField(_passwordController, "Password", "Please enter password"),
+                  ElevatedButton(
+                    onPressed: postRegisterFormData,
+                    child: Text('Register'),
+                  )
                 ],
               ),
             ),
-          ],
+          
+          ),
         ),
       ),
     );
   }
 
-  Container profileSubMenus(){
-    return Container(
-      margin: const EdgeInsets.symmetric(vertical: Config.defaultPadding * 2),
-      decoration: BoxDecoration(
-        border: Border.all(color: Color(Config.colorRed)),
+  TextFormField formTextField(TextEditingController textEditingController, String labelText, String validatorMessage){
+    return TextFormField(
+      controller: textEditingController,
+      decoration: InputDecoration(
+        labelText: labelText
       ),
-      child: ListView(
-        shrinkWrap: true,
-        scrollDirection: Axis.vertical,
-        children: <Widget>[
-          InkWell(
-            onTap: (){},
-            child: Container(
-              margin: const EdgeInsets.symmetric(vertical: Config.defaultPadding * 0.5),
-              padding: EdgeInsets.all(Config.defaultPadding),
-              decoration: BoxDecoration(
-                color: Color(Config.colorGold),
-                border: Border.all(color: Color(Config.colorLightGrey)),
-                borderRadius: BorderRadius.circular(Config.defaultPadding * 2)
-              ),
-              child: Text(
-                'My Account',
-                style: TextStyle(
-                  fontSize: Config.headingSizeLarge
-                ),
-              ),
-            ),
-          ),
-          InkWell(
-            onTap: (){},
-            child: Container(
-              margin: const EdgeInsets.symmetric(vertical: Config.defaultPadding * 0.5),
-              padding: EdgeInsets.all(Config.defaultPadding),
-              decoration: BoxDecoration(
-                  color: Color(Config.colorGold),
-                  border: Border.all(color: Color(Config.colorLightGrey)),
-                  borderRadius: BorderRadius.circular(Config.defaultPadding * 2)
-              ),
-              child: Text(
-                'Posts',
-                style: TextStyle(
-                    fontSize: Config.headingSizeLarge
-                ),
-              ),
-            ),
-          ),
-          InkWell(
-            onTap: (){},
-            child: Container(
-              margin: const EdgeInsets.symmetric(vertical: Config.defaultPadding * 0.5),
-              padding: EdgeInsets.all(Config.defaultPadding),
-              decoration: BoxDecoration(
-                  color: Color(Config.colorGold),
-                  border: Border.all(color: Color(Config.colorLightGrey)),
-                  borderRadius: BorderRadius.circular(Config.defaultPadding * 2)
-              ),
-              child: Text(
-                'Favourites',
-                style: TextStyle(
-                    fontSize: Config.headingSizeLarge
-                ),
-              ),
-            ),
-          ),
-          InkWell(
-            onTap: (){},
-            child: Container(
-              margin: const EdgeInsets.symmetric(vertical: Config.defaultPadding * 0.5),
-              padding: EdgeInsets.all(Config.defaultPadding),
-              decoration: BoxDecoration(
-                  color: Color(Config.colorGold),
-                  border: Border.all(color: Color(Config.colorLightGrey)),
-                  borderRadius: BorderRadius.circular(Config.defaultPadding * 2)
-              ),
-              child: Text(
-                'Activity',
-                style: TextStyle(
-                    fontSize: Config.headingSizeLarge
-                ),
-              ),
-            ),
-          )
-        ],
+      validator: (value) {
+        return ( value == null || value.isEmpty ) ? validatorMessage : null;
+      },
+    );
+  }
+
+  TextFormField formTextFieldCanBeNull(TextEditingController textEditingController, String labelText, String validatorMessage){
+    return TextFormField(
+      controller: textEditingController,
+      decoration: InputDecoration(
+          labelText: labelText
       ),
+      validator: (value) {
+        return ( value == null || value.isEmpty ) ? null : null;
+      },
+    );
+  }
+
+  TextFormField formNumberField(TextEditingController textEditingController, String labelText, String validatorMessage){
+    return TextFormField(
+      controller: textEditingController,
+      decoration: InputDecoration(
+          labelText: labelText
+      ),
+      keyboardType: TextInputType.number,
+      validator: (value) {
+        return ( value == null || value.isEmpty ) ? validatorMessage : null;
+      },
+    );
+  }
+
+  TextFormField formPasswordField(TextEditingController textEditingController, String labelText, String validatorMessage){
+    return TextFormField(
+      controller: textEditingController,
+      decoration: InputDecoration(
+          labelText: labelText
+      ),
+      keyboardType: TextInputType.number,
+      obscureText: _obscurePasswordText,
+      validator: (value) {
+        if ( value == null || value.isEmpty ) {
+          return validatorMessage;
+        } else if ( value.length < 8 ) {
+          return "Password must be 8 characters long";
+        } else { return null; }
+      },
     );
   }
 }

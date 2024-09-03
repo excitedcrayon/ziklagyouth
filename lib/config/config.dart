@@ -16,6 +16,8 @@ abstract class Config {
   static const String favouritesHeading = "Favourites";
 
   // Links
+  static const String DOMAIN = (!production) ? "http://192.168.15.3/ziklagyouthapi" : "";
+  static const String registerLink = "$DOMAIN/register";
 
   // Colors
   static const int colorBlack = 0xFF000000;
