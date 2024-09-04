@@ -23,6 +23,9 @@ class _MainPageState extends State<MainPage> {
 
   @override
   Widget build(BuildContext context) {
+
+    bool isKeyboardOpen = MediaQuery.of(context).viewInsets.bottom != 0.0;
+
     return Scaffold(
       body: IndexedStack(
         index: _selectedIndex,
@@ -33,7 +36,7 @@ class _MainPageState extends State<MainPage> {
           ProfilePage()
         ],
       ),
-      bottomNavigationBar: NavigationBar(
+      bottomNavigationBar: (isKeyboardOpen) ? null : NavigationBar(
         selectedIndex: _selectedIndex,
         onDestinationSelected: _navigationMenuItemTapped,
         destinations: const <NavigationDestination>[

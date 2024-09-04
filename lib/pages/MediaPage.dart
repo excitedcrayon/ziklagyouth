@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:ziklagyouth/config/dictionary.dart';
 
 import '../config/config.dart';
 
@@ -16,7 +17,6 @@ class _MediaPageState extends State<MediaPage> with TickerProviderStateMixin {
 
   @override
   void initState(){
-    print('initializing page');
     super.initState();
     _tabController = TabController(length: 2, vsync: this);
   }
@@ -36,8 +36,8 @@ class _MediaPageState extends State<MediaPage> with TickerProviderStateMixin {
           bottom: TabBar(
             controller: _tabController,
             tabs: const <Tab>[
-              Tab(text: 'Audio',),
-              Tab(text: 'Video',),
+              Tab(text: Dictionary.audio,),
+              Tab(text: Dictionary.video,),
             ],
           ),
         ),
@@ -45,7 +45,7 @@ class _MediaPageState extends State<MediaPage> with TickerProviderStateMixin {
           controller: _tabController,
           children: <Widget>[
             Center(
-              child: Text('Audio data'),
+              child: Text(Dictionary.audioData),
             ),
             GridView.count(
               crossAxisCount: Config.gridCount,

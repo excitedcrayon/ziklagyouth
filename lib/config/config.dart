@@ -16,7 +16,9 @@ abstract class Config {
   static const String favouritesHeading = "Favourites";
 
   // Links
-  static const String DOMAIN = (!production) ? "http://192.168.15.3/ziklagyouthapi" : "";
+  static const String WORK_IP_ADDRESS = "10.4.40.164";
+  static const String UNIT_IP_ADDRESS = "192.168.15.3";
+  static const String DOMAIN = (!production) ? "http://$WORK_IP_ADDRESS/ziklagyouthapi" : "";
   static const String registerLink = "$DOMAIN/register";
 
   // Colors
