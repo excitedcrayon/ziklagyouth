@@ -30,37 +30,39 @@ class _MediaPageState extends State<MediaPage> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
-        appBar: AppBar(
-          bottom: TabBar(
+    return Material(
+      child: SafeArea(
+        child: Scaffold(
+          appBar: AppBar(
+            bottom: TabBar(
+              controller: _tabController,
+              tabs: const <Tab>[
+                Tab(text: Dictionary.audio,),
+                Tab(text: Dictionary.video,),
+              ],
+            ),
+          ),
+          body: TabBarView(
             controller: _tabController,
-            tabs: const <Tab>[
-              Tab(text: Dictionary.audio,),
-              Tab(text: Dictionary.video,),
+            children: <Widget>[
+              Center(
+                child: Text(Dictionary.audioData),
+              ),
+              GridView.count(
+                crossAxisCount: Config.gridCount,
+                children: List.generate(20, (index) {
+                  return Container(
+                    width: Config.iconMediumSize,
+                    height: Config.iconMediumSize,
+                    decoration: BoxDecoration(
+                      color: Color(Config.colorBlack),
+                      border: Border.all(color: Color(Config.colorLightGrey))
+                    ),
+                  );
+                }),
+              )
             ],
           ),
-        ),
-        body: TabBarView(
-          controller: _tabController,
-          children: <Widget>[
-            Center(
-              child: Text(Dictionary.audioData),
-            ),
-            GridView.count(
-              crossAxisCount: Config.gridCount,
-              children: List.generate(20, (index) {
-                return Container(
-                  width: Config.iconMediumSize,
-                  height: Config.iconMediumSize,
-                  decoration: BoxDecoration(
-                    color: Color(Config.colorBlack),
-                    border: Border.all(color: Color(Config.colorLightGrey))
-                  ),
-                );
-              }),
-            )
-          ],
         ),
       ),
     );
