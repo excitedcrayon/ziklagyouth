@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:http/http.dart' as http;
-import 'package:ziklagyouth/config/config.dart';
+import 'package:ziklagyouth/pages/ProfileSubPages/LoginPage.dart';
 import 'package:ziklagyouth/pages/ProfileSubPages/RegisterPage.dart';
 
 
@@ -49,7 +47,15 @@ class _ProfilePageState extends State<ProfilePage> {
             Expanded(
               flex: 1,
               child: Container(
-                child: Text('Login'),
+                child: InkWell(
+                  onTap: (){
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => const LoginPage())
+                    );
+                  },
+                  child: Text('Login'),
+                ),
               ),
             ),
           ],

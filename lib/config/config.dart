@@ -20,6 +20,7 @@ abstract class Config {
   static const String UNIT_IP_ADDRESS = "192.168.15.3";
   static const String DOMAIN = (!production) ? "http://$WORK_IP_ADDRESS/ziklagyouthapi" : "";
   static const String registerLink = "$DOMAIN/register";
+  static const String loginLink = "$DOMAIN/login";
 
   // Colors
   static const int colorBlack = 0xFF000000;

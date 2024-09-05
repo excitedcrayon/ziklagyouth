@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'dart:ui';
-
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:ziklagyouth/config/config.dart';
@@ -66,20 +65,23 @@ class _RegisterPageState extends State<RegisterPage> {
             }
         );
 
-        if ( response.body.isNotEmpty ) {
+        if ( response.body.isNotEmpty && context.mounted ) {
 
           final decodedRegister = jsonDecode(response.body);
           final registerData = decodedRegister['register'];
 
           if ( registerData['success'] ) {
             CustomWidget.notificationWithContext(context, registerData['message']);
+            Navigator.pop(context);
           } else {
             CustomWidget.notificationWithContext(context, registerData['message']);
           }
         }
 
       } catch(e) {
-        CustomWidget.notificationWithContext(context, "$e");
+        if ( context.mounted ) {
+          CustomWidget.notificationWithContext(context, "$e");
+        }
       }
     } else {
       CustomWidget.notificationWithContext(context, "Please complete form");
@@ -104,184 +106,20 @@ class _RegisterPageState extends State<RegisterPage> {
                       FontWeight.w300,
                       Config.colorBlack
                     ),
-                    formTextField(_firstnameController, "John", "Please enter firstname"),
-                    formTextFieldCanBeNull(_middlenameController, "", ""),
-                    formTextField(_lastnameController, "Doe", "Please enter lastname"),
-                    formNumberField(_phoneController, "027xxxxxx", "Please enter phone number"),
-                    formTextField(_emailController, "email@tld.com", "Please enter email"),
-                    formPasswordField(_passwordController, "Password", "Please enter password"),
-                    registerButton(),
-                    cancelButton(),
+                    CustomWidget.formTextField(_firstnameController, "John", "Please enter firstname"),
+                    CustomWidget.formTextFieldCanBeNull(_middlenameController, "", ""),
+                    CustomWidget.formTextField(_lastnameController, "Doe", "Please enter lastname"),
+                    CustomWidget.formNumberField(_phoneController, "027xxxxxx", "Please enter phone number"),
+                    CustomWidget.formTextField(_emailController, "email@tld.com", "Please enter email"),
+                    CustomWidget.formPasswordField(_passwordController, "Password", "Please enter password", _obscurePasswordText),
+                    CustomWidget.registerButton(context, (context) => postRegisterFormData(context)),
+                    CustomWidget.cancelButton(context),
                   ],
                 ),
               ),
             ),
           ),
         ),
-      ),
-    );
-  }
-
-  Container formTextField(TextEditingController textEditingController, String labelText, String validatorMessage){
-    return Container(
-      width: double.infinity,
-      margin: const EdgeInsets.symmetric(
-        vertical: Config.defaultPadding * 0.5
-      ),
-      child: TextFormField(
-        controller: textEditingController,
-        decoration: InputDecoration(
-          hintText: labelText,
-          hintStyle: const TextStyle(
-            color: Color(Config.colorDarkGrey),
-          ),
-          errorText: validatorMessage,
-        ),
-        validator: (value) {
-          return ( value == null || value.isEmpty ) ? validatorMessage : null;
-        },
-      ),
-    );
-  }
-
-  Container formTextFieldCanBeNull(TextEditingController textEditingController, String labelText, String validatorMessage){
-    return Container(
-      width: double.infinity,
-      margin: const EdgeInsets.symmetric(
-          vertical: Config.defaultPadding * 0.5
-      ),
-      child: TextFormField(
-        controller: textEditingController,
-        decoration: InputDecoration(
-          hintText: labelText,
-          hintStyle: const TextStyle(
-            color: Color(Config.colorDarkGrey),
-          ),
-        ),
-        validator: (value) {
-          return ( value == null || value.isEmpty ) ? null : null;
-        },
-      ),
-    );
-  }
-
-  Container formNumberField(TextEditingController textEditingController, String labelText, String validatorMessage){
-    return Container(
-      width: double.infinity,
-      margin: const EdgeInsets.symmetric(
-          vertical: Config.defaultPadding * 0.5
-      ),
-      child: TextFormField(
-        controller: textEditingController,
-        decoration: InputDecoration(
-          hintText: labelText,
-          hintStyle: const TextStyle(
-            color: Color(Config.colorDarkGrey),
-          ),
-          errorText: validatorMessage
-        ),
-        keyboardType: TextInputType.number,
-        validator: (value) {
-          return ( value == null || value.isEmpty ) ? validatorMessage : null;
-        },
-      ),
-    );
-  }
-
-  Container formPasswordField(TextEditingController textEditingController, String labelText, String validatorMessage){
-    return Container(
-      width: double.infinity,
-      margin: const EdgeInsets.symmetric(
-          vertical: Config.defaultPadding * 0.5
-      ),
-      child: TextFormField(
-        controller: textEditingController,
-        decoration: InputDecoration(
-          hintText: labelText,
-          hintStyle: const TextStyle(
-            color: Color(Config.colorDarkGrey),
-          ),
-          errorText: validatorMessage,
-        ),
-        keyboardType: TextInputType.number,
-        obscureText: _obscurePasswordText,
-        validator: (value) {
-          if ( value == null || value.isEmpty ) {
-            return validatorMessage;
-          } else if ( value.length < 8 ) {
-            return "Password must be 8 characters long";
-          } else { return null; }
-        },
-      ),
-    );
-  }
-
-  InkWell registerButton(){
-    return InkWell(
-      onTap: (){
-        postRegisterFormData(context);
-      },
-      child: Container(
-          width: double.infinity,
-          alignment: Alignment.center,
-          margin: const EdgeInsets.all(Config.defaultPadding * 0.8),
-          decoration: BoxDecoration(
-            color: const Color(Config.colorBlack),
-            border: Border.all(
-                color: const Color(Config.colorBlack),
-                width: 3.0
-            ),
-            borderRadius: BorderRadius.circular(Config.defaultPadding * 5),
-          ),
-          child: const Padding(
-            padding: EdgeInsets.symmetric(
-                vertical: Config.defaultPadding / 2,
-                horizontal: Config.defaultPadding
-            ),
-            child: Text(
-              Dictionary.signUp,
-              style: TextStyle(
-                  color: Color(Config.colorWhite),
-                  fontSize: Config.headingSizeLarge * 1.1,
-                  fontWeight: FontWeight.w600
-              ),
-            ),
-          )
-      ),
-    );
-  }
-
-  InkWell cancelButton(){
-    return InkWell(
-      onTap: (){
-        Navigator.pop(context);
-      },
-      child: Container(
-          width: double.infinity,
-          alignment: Alignment.center,
-          margin: const EdgeInsets.all(Config.defaultPadding * 0.8),
-          decoration: BoxDecoration(
-            color: const Color(Config.colorRed),
-            border: Border.all(
-                color: const Color(Config.colorRed),
-                width: 3.0
-            ),
-            borderRadius: BorderRadius.circular(Config.defaultPadding * 5),
-          ),
-          child: const Padding(
-            padding: EdgeInsets.symmetric(
-                vertical: Config.defaultPadding / 2,
-                horizontal: Config.defaultPadding
-            ),
-            child: Text(
-              Dictionary.cancel,
-              style: TextStyle(
-                  color: Color(Config.colorWhite),
-                  fontSize: Config.headingSizeLarge * 1.1,
-                  fontWeight: FontWeight.w600
-              ),
-            ),
-          )
       ),
     );
   }
