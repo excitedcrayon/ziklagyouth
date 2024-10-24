@@ -1,7 +1,12 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
-import 'package:ziklagyouth/helper/SharedPreferencesHelper.dart';
+import 'package:provider/provider.dart';
+import 'package:http/http.dart' as http;
+import 'package:ziklagyouth/config/config.dart';
 import 'package:ziklagyouth/pages/ProfileSubPages/LoginPage.dart';
 import 'package:ziklagyouth/pages/ProfileSubPages/RegisterPage.dart';
+import 'package:ziklagyouth/provider/UserNotifier.dart';
 
 
 class ProfilePage extends StatefulWidget {
@@ -17,7 +22,6 @@ class _ProfilePageState extends State<ProfilePage> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    _loginDataList();
   }
 
   @override
@@ -26,49 +30,118 @@ class _ProfilePageState extends State<ProfilePage> {
     super.dispose();
   }
 
-  void _loginDataList() async {
-    await SharedPreferencesHelper.init();
-    List<String>? loginData = await SharedPreferencesHelper.getAuthenticated();
-    setState(() {
-      print(loginData?.length);
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
 
+    final userNotifier = Provider.of<UserNotifier>(context);
+
+    userNotifier.getAuthenticated();
+    print(userNotifier.loginData);
+
     return SafeArea(
       child: Scaffold(
-        body: Column(
+        body: ( userNotifier.loginData.isNotEmpty ) 
+            ? loggedInProfile(userNotifier) 
+            : loggedOutProfile(context),
+      ),
+    );
+  }
+  
+  Column loggedInProfile(UserNotifier userNotifier) {
+    return Column(
+      children: <Widget>[
+        settingsSection(),
+        logout(userNotifier, userNotifier.loginData),
+      ],
+    );
+  }
+
+  Container settingsSection(){
+    return Container(
+      width: double.infinity,
+      height: Config.defaultPadding * 4.5,
+      decoration: const BoxDecoration(
+        color: Color(Config.colorGold),
+      ),
+      child: const Padding(
+        padding: EdgeInsets.all(Config.defaultPadding),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
-            Expanded(
-              flex: 1,
-              child: InkWell(
-                onTap: (){
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => const RegisterPage()),
-                  );
-                },
-                child: Text('Register'),
+            Text(
+              'Settings',
+              style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: Config.defaultPadding * 1.2
               ),
             ),
-            Expanded(
-              flex: 1,
-              child: InkWell(
-                onTap: (){
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => const LoginPage())
-                  );
-                },
-                child: Text('Login'),
+            InkWell(
+              child: Icon(
+                Icons.settings,
+                size: Config.iconSize * 1.5,
               ),
-            ),
+            )
           ],
         ),
       ),
     );
   }
 
+  ElevatedButton logout(UserNotifier userNotifier, List<String> loginData) {
+
+    userNotifier.getAuthenticated();
+
+    return ElevatedButton(
+      onPressed: () async {
+        // send http request to logout link
+        await http.post(
+          Uri.parse(Config.logutLink),
+          body: {
+            "email": userNotifier.loginData[1]
+          }
+        ).then((response) {
+
+          if ( response.body.isNotEmpty ) {
+            final decodedLogout = jsonDecode(response.body);
+            if ( decodedLogout['logout']['success'] ) userNotifier.setLoggedOut();
+          }
+
+        });
+      },
+      child: const Center(
+        child: Text('Logout'),
+      ),
+    );
+  }
+
+  Center loggedOutProfile(BuildContext context){
+    return Center(
+      child: SizedBox(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <ElevatedButton>[
+            ElevatedButton(
+              onPressed: (){
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const RegisterPage())
+                );
+              },
+              child: const Text('Sign Up'),
+            ),
+            ElevatedButton(
+              onPressed: (){
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => const LoginPage())
+                );
+              },
+              child: const Text('Sign In'),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
 }

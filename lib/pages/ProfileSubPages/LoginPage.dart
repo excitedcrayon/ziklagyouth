@@ -1,7 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:provider/provider.dart';
 import 'package:ziklagyouth/config/dictionary.dart';
 import 'package:ziklagyouth/provider/UserNotifier.dart';
 import 'package:ziklagyouth/widgets/CustomWidget.dart';
@@ -49,9 +48,6 @@ class _LoginPageState extends State<LoginPage> {
           "password": password
         }
       ).then((response) {
-        // render result here and do all the thingy majig
-        print("Checking result from postLoginFormData async");
-        print(response.body);
 
         if ( response.body.isNotEmpty ) {
 
@@ -63,10 +59,10 @@ class _LoginPageState extends State<LoginPage> {
             Map<String, dynamic> loginData = decodedResponse['login'];
             List<String> loginDataList = loginData.values.map((value) => value.toString()).toList();
 
-            //await UserNotifier().setAuthenticated(loginDataList);
+            UserNotifier().setAuthenticated(loginDataList);
 
             if ( context.mounted ) {
-              print("Context is mounted for LoginPage.dart");
+
               CustomWidget.notificationWithContext(context, "Authentication successful");
               Navigator.of(context).pop();
             }
@@ -93,12 +89,6 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
-
-    //final userNotifier = Provider.of<UserNotifier>(context);
-
-    //userNotifier.getAuthenticated();
-    //print("printing authenticated data");
-    //print(userNotifier.loginData);
 
     return Material(
       child: SafeArea(

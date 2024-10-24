@@ -30,7 +30,9 @@ class UserNotifier extends ChangeNotifier {
     notifyListeners();
   }
 
-  void clearLoginData() {
+  Future<void> setLoggedOut() async {
+    final prefs = await SharedPreferences.getInstance();
+    prefs.remove(Config.prefsAuthenticated);
     _loginData.clear();
   }
 

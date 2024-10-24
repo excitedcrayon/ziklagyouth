@@ -22,6 +22,7 @@ abstract class Config {
   static const String DOMAIN = (!production) ? "http://$WORK_IP_ADDRESS/ziklagyouthapi" : "";
   static const String registerLink = "$DOMAIN/register";
   static const String loginLink = "$DOMAIN/login";
+  static const String logutLink = "$DOMAIN/logout";
 
   // Colors
   static const int colorBlack = 0xFF000000;
