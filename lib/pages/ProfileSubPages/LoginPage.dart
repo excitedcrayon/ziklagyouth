@@ -1,11 +1,11 @@
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:provider/provider.dart';
 import 'package:ziklagyouth/config/dictionary.dart';
+import 'package:ziklagyouth/provider/UserNotifier.dart';
 import 'package:ziklagyouth/widgets/CustomWidget.dart';
-
-import '../../config/config.dart';
+import 'package:ziklagyouth/config/config.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
@@ -27,6 +27,7 @@ class _LoginPageState extends State<LoginPage> {
     super.initState();
   }
 
+
   @override
   void dispose() {
     // TODO: implement dispose
@@ -41,36 +42,48 @@ class _LoginPageState extends State<LoginPage> {
       final username = _usernameController.text;
       final password = _passwordController.text;
 
-      print("username: $username and password :$password");
+      await http.post(
+        Uri.parse(Config.loginLink),
+        body: {
+          "username": username,
+          "password": password
+        }
+      ).then((response) {
+        // render result here and do all the thingy majig
+        print("Checking result from postLoginFormData async");
+        print(response.body);
 
-      try {
-
-        final response = await http.post(
-          Uri.parse(Config.loginLink),
-          body: {
-            "username": username,
-            "password": password
-          },
-        );
-
-        if ( response.body.isNotEmpty && context.mounted ) {
-
-          print(response.body);
+        if ( response.body.isNotEmpty ) {
 
           final decodedLogin = jsonDecode(response.body);
-          final loginData = decodedLogin['message'];
 
-          if ( loginData['success'] ) {
-            CustomWidget.notificationWithContext(context, loginData['message']);
+          if ( decodedLogin['login']['success'] == true ) {
+
+            Map<String, dynamic> decodedResponse = jsonDecode(response.body);
+            Map<String, dynamic> loginData = decodedResponse['login'];
+            List<String> loginDataList = loginData.values.map((value) => value.toString()).toList();
+
+            //await UserNotifier().setAuthenticated(loginDataList);
+
+            if ( context.mounted ) {
+              print("Context is mounted for LoginPage.dart");
+              CustomWidget.notificationWithContext(context, "Authentication successful");
+              Navigator.of(context).pop();
+            }
+
           } else {
-            CustomWidget.notificationWithContext(context, loginData['message']);
+            if ( context.mounted ) {
+              CustomWidget.notificationWithContext(context, decodedLogin['login']['message']);
+            }
           }
 
         }
 
-      } catch(e) {
-        print("login http form exception: $e");
-      }
+      }).catchError((error) {
+
+        print("login http form exception: $error");
+
+      });
 
     } else {
       CustomWidget.notificationWithContext(context, "Please complete form");
@@ -80,6 +93,13 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
+
+    //final userNotifier = Provider.of<UserNotifier>(context);
+
+    //userNotifier.getAuthenticated();
+    //print("printing authenticated data");
+    //print(userNotifier.loginData);
+
     return Material(
       child: SafeArea(
         child: Scaffold(

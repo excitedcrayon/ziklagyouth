@@ -3,7 +3,8 @@ import 'package:ziklagyouth/config/config.dart';
 import 'package:ziklagyouth/widgets/CustomWidget.dart';
 
 class HomePage extends StatefulWidget {
-  const HomePage({Key? key}) : super(key: key);
+
+  const HomePage({super.key});
 
   @override
   State<HomePage> createState() => _HomePageState();
@@ -19,6 +20,9 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+
+
+
     return Material(
       child: SafeArea(
         child: Scaffold(

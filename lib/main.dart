@@ -1,12 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:ziklagyouth/config/config.dart';
 import 'package:ziklagyouth/pages/MainPage.dart';
+import 'package:provider/provider.dart';
+import 'package:ziklagyouth/provider/UserNotifier.dart';
 
-void main() {
-  runApp(const MyApp());
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  runApp(
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => UserNotifier()),
+      ],
+      child: const MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatefulWidget {
+
   const MyApp({super.key});
 
   @override

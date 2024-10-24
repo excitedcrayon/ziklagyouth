@@ -16,6 +16,7 @@ abstract class Config {
   static const String favouritesHeading = "Favourites";
 
   // Links
+  static const String HOME_IP_ADDRESS = "10.1.1.170";
   static const String WORK_IP_ADDRESS = "10.4.40.164";
   static const String UNIT_IP_ADDRESS = "192.168.15.3";
   static const String DOMAIN = (!production) ? "http://$WORK_IP_ADDRESS/ziklagyouthapi" : "";
@@ -46,5 +47,9 @@ abstract class Config {
   static const double iconSize = 20.0;
   static const double iconMediumSize = 50.0;
 
+  static const double defaultLoadingTimer = 10.0;
+
   static const int gridCount = 3;
+
+  static const String prefsAuthenticated = "authenticated";
 }

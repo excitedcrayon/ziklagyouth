@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:ziklagyouth/widgets/CustomWidget.dart';
 
 import '../config/config.dart';
 
 class Contactspage extends StatefulWidget {
-  const Contactspage({Key? key}) : super(key: key);
+
+  const Contactspage({super.key});
 
   @override
   State<Contactspage> createState() => _ContactspageState();

@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:ziklagyouth/pages/ContactsPage.dart';
 import 'package:ziklagyouth/pages/HomePage.dart';
 import 'package:ziklagyouth/pages/MediaPage.dart';
 import 'package:ziklagyouth/pages/ProfilePage.dart';
 
 class MainPage extends StatefulWidget {
-  const MainPage({Key? key}) : super(key: key);
+
+  const MainPage({super.key});
 
   @override
   State<MainPage> createState() => _MainPageState();
