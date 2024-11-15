@@ -22,7 +22,7 @@ abstract class Config {
   static const String DOMAIN = (!production) ? "http://$HOME_IP_ADDRESS/ziklagyouthapi" : "";
   static const String registerLink = "$DOMAIN/register";
   static const String loginLink = "$DOMAIN/login";
-  static const String logutLink = "$DOMAIN/logout";
+  static const String logoutLink = "$DOMAIN/logout";
   static const String authenticated = "$DOMAIN/authenticated";
 
   // Colors
@@ -54,4 +54,15 @@ abstract class Config {
   static const int gridCount = 3;
 
   static const String prefsAuthenticated = "authenticated";
+  static const String userData = "userData";
+  static const String authCookieToken = "authCookieToken";
+  static const String email = "email";
+  static const String firstname = "firstname";
+  static const String middlename = "middlename";
+  static const String lastname = "lastname";
+  static const String phone = "phone";
+  static const String physicalAddress = "physicalAddress";
+  static const String profilePic = "profilePic";
+  static const String accountType = "accountType";
+
 }

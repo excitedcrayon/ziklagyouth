@@ -62,15 +62,9 @@ class _LoginPageState extends State<LoginPage> {
             final setCookieRegexMatch = setCookieRegex.firstMatch(setCookie!);
             final authentication = setCookieRegexMatch?.group(1);
 
-            loginDataList.insert(0, authentication!);
-            loginDataList.insert(1, decodedLogin['login']['email']);
-            loginDataList.insert(2, decodedLogin['login']['firstname']);
-            loginDataList.insert(3, (decodedLogin['login']['middlename'] != null) ? decodedLogin['login']['middlename'] : null);
-            loginDataList.insert(4, decodedLogin['login']['lastname']);
-            loginDataList.insert(5, decodedLogin['login']['phone']);
-            loginDataList.insert(6, decodedLogin['login']['accountType']);
+            decodedLogin['login']['authCookieToken'] = authentication;
 
-            UserNotifier().setAuthenticated(loginDataList);
+            UserNotifier().setUserData(jsonEncode(decodedLogin['login']));
 
             if ( context.mounted ) {
               CustomWidget.notificationWithContext(context, "Authentication successful");

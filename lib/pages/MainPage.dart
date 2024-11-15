@@ -29,11 +29,14 @@ class _MainPageState extends State<MainPage> {
 
   Future<void> authentication(BuildContext context, UserNotifier userNotifier) async {
 
+    userNotifier.getUserData();
+    var decodedUserData = (userNotifier.userData.isNotEmpty) ? jsonDecode(userNotifier.userData) : "";
+
     await http.post(
       Uri.parse(Config.authenticated),
       body: {
-        "authCookieToken": (userNotifier.loginData.isNotEmpty && userNotifier.loginData[0].isNotEmpty) ? userNotifier.loginData[0] : null,
-        "email": (userNotifier.loginData.isNotEmpty && userNotifier.loginData[1].isNotEmpty) ? userNotifier.loginData[1] : null
+        "authCookieToken": (userNotifier.userData.isNotEmpty && decodedUserData[Config.authCookieToken].isNotEmpty) ? decodedUserData[Config.authCookieToken] : null,
+        "email": (userNotifier.userData.isNotEmpty && decodedUserData[Config.email].isNotEmpty) ? decodedUserData[Config.email] : null
       }
     ).then((response) {
 

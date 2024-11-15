@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:http/http.dart' as http;
@@ -34,13 +33,12 @@ class _ProfilePageState extends State<ProfilePage> {
   Widget build(BuildContext context) {
 
     final userNotifier = Provider.of<UserNotifier>(context);
-
-    userNotifier.getAuthenticated();
+    userNotifier.getUserData();
 
     return SafeArea(
       child: Scaffold(
-        body: ( userNotifier.loginData.isNotEmpty )
-            ? loggedInProfile(userNotifier) 
+        body: ( userNotifier.userData.isNotEmpty )
+            ? loggedInProfile(userNotifier)
             : loggedOutProfile(context),
       ),
     );
@@ -50,7 +48,7 @@ class _ProfilePageState extends State<ProfilePage> {
     return Column(
       children: <Widget>[
         settingsSection(),
-        logout(userNotifier, userNotifier.loginData),
+        logout(userNotifier),
       ],
     );
   }
@@ -87,17 +85,19 @@ class _ProfilePageState extends State<ProfilePage> {
     );
   }
 
-  ElevatedButton logout(UserNotifier userNotifier, List<String> loginData) {
+  ElevatedButton logout(UserNotifier userNotifier) {
 
-    userNotifier.getAuthenticated();
+    userNotifier.getUserData();
+    var data = jsonDecode(userNotifier.userData);
 
     return ElevatedButton(
+
       onPressed: () async {
         // send http request to logout link
         await http.post(
-          Uri.parse(Config.logutLink),
+          Uri.parse(Config.logoutLink),
           body: {
-            "email": userNotifier.loginData[1]
+            "email": data[Config.email] as String
           }
         ).then((response) {
 
