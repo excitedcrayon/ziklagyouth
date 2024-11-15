@@ -18,7 +18,6 @@ class UserNotifier extends ChangeNotifier {
   }
 
   Future<void> setAuthenticated(List<String> loginDataList) async {
-    loginDataList.removeAt(0);
     final prefs = await SharedPreferences.getInstance();
     prefs.setStringList(Config.prefsAuthenticated, loginDataList);
     notifyListeners();

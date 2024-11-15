@@ -1,9 +1,13 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:provider/provider.dart';
+import 'package:http/http.dart' as http;
+import 'package:ziklagyouth/config/config.dart';
 import 'package:ziklagyouth/pages/ContactsPage.dart';
 import 'package:ziklagyouth/pages/HomePage.dart';
 import 'package:ziklagyouth/pages/MediaPage.dart';
 import 'package:ziklagyouth/pages/ProfilePage.dart';
+import 'package:ziklagyouth/provider/UserNotifier.dart';
 
 class MainPage extends StatefulWidget {
 
@@ -23,10 +27,39 @@ class _MainPageState extends State<MainPage> {
     });
   }
 
+  Future<void> authentication(BuildContext context, UserNotifier userNotifier) async {
+
+    await http.post(
+      Uri.parse(Config.authenticated),
+      body: {
+        "authCookieToken": (userNotifier.loginData.isNotEmpty && userNotifier.loginData[0].isNotEmpty) ? userNotifier.loginData[0] : null,
+        "email": (userNotifier.loginData.isNotEmpty && userNotifier.loginData[1].isNotEmpty) ? userNotifier.loginData[1] : null
+      }
+    ).then((response) {
+
+      if ( response.body.isNotEmpty ) {
+
+        final decodedAuthentication = jsonDecode(response.body);
+
+        // if authCookie is not valid, clear local shared preferences for user data login
+        if ( !decodedAuthentication['authenticated']['status'] ) {
+          userNotifier.setLoggedOut();
+        }
+
+      }
+
+    }).catchError((error) {});
+
+  }
+
   @override
   Widget build(BuildContext context) {
 
     bool isKeyboardOpen = MediaQuery.of(context).viewInsets.bottom != 0.0;
+
+    final userNotifier = Provider.of<UserNotifier>(context);
+
+    authentication(context, userNotifier);
 
     return Material(
       child: SafeArea(

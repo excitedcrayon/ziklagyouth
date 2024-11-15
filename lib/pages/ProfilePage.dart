@@ -36,11 +36,10 @@ class _ProfilePageState extends State<ProfilePage> {
     final userNotifier = Provider.of<UserNotifier>(context);
 
     userNotifier.getAuthenticated();
-    print(userNotifier.loginData);
 
     return SafeArea(
       child: Scaffold(
-        body: ( userNotifier.loginData.isNotEmpty ) 
+        body: ( userNotifier.loginData.isNotEmpty )
             ? loggedInProfile(userNotifier) 
             : loggedOutProfile(context),
       ),

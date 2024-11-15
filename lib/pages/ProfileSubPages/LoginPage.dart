@@ -37,6 +37,8 @@ class _LoginPageState extends State<LoginPage> {
 
   Future<void> postLoginFormData(BuildContext context) async {
 
+    List<String> loginDataList = [];
+
     if ( _loginFormKey.currentState?.validate() ?? false ) {
       final username = _usernameController.text;
       final password = _passwordController.text;
@@ -51,18 +53,26 @@ class _LoginPageState extends State<LoginPage> {
 
         if ( response.body.isNotEmpty ) {
 
+          final setCookie = response.headers['set-cookie'];
           final decodedLogin = jsonDecode(response.body);
 
           if ( decodedLogin['login']['success'] == true ) {
+            
+            final setCookieRegex = RegExp(r"authentication=([^;]+)");
+            final setCookieRegexMatch = setCookieRegex.firstMatch(setCookie!);
+            final authentication = setCookieRegexMatch?.group(1);
 
-            Map<String, dynamic> decodedResponse = jsonDecode(response.body);
-            Map<String, dynamic> loginData = decodedResponse['login'];
-            List<String> loginDataList = loginData.values.map((value) => value.toString()).toList();
+            loginDataList.insert(0, authentication!);
+            loginDataList.insert(1, decodedLogin['login']['email']);
+            loginDataList.insert(2, decodedLogin['login']['firstname']);
+            loginDataList.insert(3, (decodedLogin['login']['middlename'] != null) ? decodedLogin['login']['middlename'] : null);
+            loginDataList.insert(4, decodedLogin['login']['lastname']);
+            loginDataList.insert(5, decodedLogin['login']['phone']);
+            loginDataList.insert(6, decodedLogin['login']['accountType']);
 
             UserNotifier().setAuthenticated(loginDataList);
 
             if ( context.mounted ) {
-
               CustomWidget.notificationWithContext(context, "Authentication successful");
               Navigator.of(context).pop();
             }
@@ -75,11 +85,7 @@ class _LoginPageState extends State<LoginPage> {
 
         }
 
-      }).catchError((error) {
-
-        print("login http form exception: $error");
-
-      });
+      }).catchError((error) {});
 
     } else {
       CustomWidget.notificationWithContext(context, "Please complete form");
