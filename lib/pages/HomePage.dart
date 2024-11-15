@@ -1,6 +1,10 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:ziklagyouth/config/config.dart';
 import 'package:ziklagyouth/widgets/CustomWidget.dart';
+import 'package:ziklagyouth/provider/UserNotifier.dart';
 
 class HomePage extends StatefulWidget {
 
@@ -21,7 +25,10 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
 
+    final userNotifier = Provider.of<UserNotifier>(context);
+    userNotifier.getUserData();
 
+    var decodedUserData = (userNotifier.userData.isNotEmpty) ? jsonDecode(userNotifier.userData) : "";
 
     return Material(
       child: SafeArea(
@@ -34,10 +41,13 @@ class _HomePageState extends State<HomePage> {
                   width: double.infinity,
                   child: Column(
                     children: <Widget>[
-                      CustomWidget.renderText(Config.welcomeText, 0.0,
-                          FontWeight.w400, Config.colorBlack),
-                      CustomWidget.renderText("Bongani", Config.headingSizeXLarge,
-                          FontWeight.w300, Config.colorBlack),
+                      CustomWidget.renderText(Config.welcomeText, 0.0, FontWeight.w400, Config.colorBlack),
+                      CustomWidget.renderText(
+                          (decodedUserData.isEmpty) ? Config.guest : decodedUserData[Config.firstname],
+                          Config.headingSizeXLarge,
+                          FontWeight.w300,
+                          Config.colorBlack
+                      )
                     ],
                   ),
                 ),

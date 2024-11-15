@@ -64,5 +64,6 @@ abstract class Config {
   static const String physicalAddress = "physicalAddress";
   static const String profilePic = "profilePic";
   static const String accountType = "accountType";
+  static const String guest = "Guest";
 
 }
