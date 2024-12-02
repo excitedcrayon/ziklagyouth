@@ -19,7 +19,8 @@ abstract class Config {
   static const String HOME_IP_ADDRESS = "10.1.1.170";
   static const String WORK_IP_ADDRESS = "10.4.40.164";
   static const String UNIT_IP_ADDRESS = "192.168.15.3";
-  static const String DOMAIN = (!production) ? "http://$HOME_IP_ADDRESS/ziklagyouthapi" : "";
+  static const String GAUTENG_IP_ADDRESS = "192.168.0.110";
+  static const String DOMAIN = (!production) ? "http://$GAUTENG_IP_ADDRESS/ziklagyouthapi" : "";
   static const String registerLink = "$DOMAIN/register";
   static const String loginLink = "$DOMAIN/login";
   static const String logoutLink = "$DOMAIN/logout";
@@ -65,5 +66,5 @@ abstract class Config {
   static const String profilePic = "profilePic";
   static const String accountType = "accountType";
   static const String guest = "Guest";
-
+  static const String editProfile = "Edit Profile";
 }
