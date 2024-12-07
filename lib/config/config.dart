@@ -25,6 +25,8 @@ abstract class Config {
   static const String loginLink = "$DOMAIN/login";
   static const String logoutLink = "$DOMAIN/logout";
   static const String authenticated = "$DOMAIN/authenticated";
+  static const String mediaLink = "$DOMAIN/mediaupload";
+  static const String uploadsLink = "$DOMAIN/uploads";
 
   // Colors
   static const int colorBlack = 0xFF000000;
