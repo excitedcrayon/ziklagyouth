@@ -135,19 +135,28 @@ class _MediaPageState extends State<MediaPage> with TickerProviderStateMixin {
                       );
                     },
                     child: Container(
-                              width: Config.iconMediumSize,
-                              height: Config.iconMediumSize,
-                              decoration: BoxDecoration(
-                                color: Color(Config.colorBlack),
-                                border: Border.all(color: Color(Config.colorLightGrey))
-                              ),
-                            ),
+                      alignment: Alignment.bottomCenter,
+                      width: Config.iconMediumSize,
+                      height: Config.iconMediumSize,
+                      decoration: BoxDecoration(
+                          color: const Color(Config.colorBlack),
+                          border: Border.all(color: const Color(Config.colorLightGrey))
+                      ),
+                      child: Text(
+                        snapshot.data[index]["title"],
+                        overflow: TextOverflow.ellipsis,
+                        style: const TextStyle(
+                          color: Color(Config.colorDarkGrey),
+                          fontWeight: FontWeight.w600
+                        ),
+                      ),
+                    ),
                   )
                   : Container();
             }),
           );
         } else {
-          return Center(
+          return const Center(
             child: Text("No data available"),
           );
         }
