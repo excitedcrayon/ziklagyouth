@@ -23,7 +23,11 @@ class _AppVideoPlayerState extends State<AppVideoPlayer> {
     // TODO: implement initState
     super.initState();
     _currentIndex = widget.initialIndex;
-    _pageController = PageController(initialPage: widget.initialIndex);
+    _pageController = PageController(
+      initialPage: widget.initialIndex,
+      keepPage: true,
+      viewportFraction: 1
+    );
   }
 
   @override
@@ -94,17 +98,23 @@ class _VideoPlayerWidgetState extends State<VideoPlayerWidget> {
   
   @override
   Widget build(BuildContext context) {
-    /*
-    return _videoPlayerController.value.isInitialized
-    ? AspectRatio(
-      aspectRatio: 16/10,
-      child: VideoPlayer(_videoPlayerController),
-    ) : const Center(
-      child: CircularProgressIndicator(),
-    ); */
-    return AspectRatio(
-      aspectRatio: 16/10,
-      child: VideoPlayer(_videoPlayerController),
-    );
+
+    return _videoPlayerController.value.isInitialized ? Container(
+      width: double.infinity,
+      height: double.infinity,
+      decoration: const BoxDecoration(
+        color: Color(Config.colorBlack),
+      ),
+      child: SizedBox.expand(
+        child: FittedBox(
+          fit: BoxFit.contain,
+          child: SizedBox(
+            width: _videoPlayerController.value.aspectRatio,
+            height: 1,
+            child: VideoPlayer(_videoPlayerController),
+          ),
+        ),
+      ),
+    ) : const Center ( child: CircularProgressIndicator(),);
   }
 }
